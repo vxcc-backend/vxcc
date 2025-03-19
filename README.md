@@ -1,3 +1,5 @@
+## IMPORTANT: the compiler will be completely rewritten soon. Do not use this anymore
+
 # VXCC
 optimizing, small, simple, compiler backend.
 
@@ -60,24 +62,6 @@ all contributions are welcome! Don't hesitate to ask me if you have any question
 
 please do not currently change anything related to:
 - codegen system / isel & regalloc (because I want to re-do it in a specific way)
-
-## BOUNTIES
-(if you want to do any of the following, please contact me first for exact details)
-
-| id  | task                                                                                                     | money            | dependencies        |
-| --- | -------------------------------------------------------------------------------------------------------- | ---------------- | ------------------- |
-|  1. | target-independent nasm-style assembly __parser__ + conditional prefix like `{z} mov r0, 1`              |   100€   (~107$) |                     |
-|  2. | refactor number data types to allow non-power-of-2 bit widths, and also add different float types        |    50€   (~ 51$) |                     |
-|  3. | lower ints pass. asks backend for supported types. lower arbitary-width integers                         |   100€   (~103$) | depends on 2        |
-|  4. | identify passes by names and use S-expr KV maps for config. describe pass pipeline using S-exprs instead |   100€   (~103$) |                     |
-|  5. | plugin system (ask me for details)                                                                       | **200€** (~207$) | depends on 4        |
-|  6. | lower IEEE 754 floats pass. asks backend for supported types. emulate F16,F32,F64 via what backend has   | **200€** (~207$) | depends on 2, 10    |
-|  7. | space-efficient binary (de-)serialization of SNode                                                       |   100€   (~103$) |                     |
-|  8. | lower fixed-point floats pass. configurable fixed-point floating point emulation                         |   100€   (~103$) | depends on 2, 9, 10 |
-|  9. | lower mul/div pass. lowers {MUL, {U,S}DIV} that are not supported by backend                             |   100€   (~103$) |                     |
-| 10. | add ops for all common float math operations. add pass that lowers unsupported ones to libm calls        | **200€** (~207$) |                     |
-| 11. | loop (and if statement) invariant code movement pass                                                     |    50€   (~ 51$) |                     |
-| 12. | loop unswitch pass: move if inside loop to outside if possible.                                          |    25€   (~ 26$) |                     |
 
 ## current optimizations
 - variable inlining
