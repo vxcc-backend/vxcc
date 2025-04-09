@@ -43,33 +43,33 @@ static char *read_value(FILE *fp, int *c, int (*is_term)(int)) {
 }
 
 // Recursively parse an s-expression from a file stream
-struct SNode *snode_parse(FILE *fp) {
+SNode *snode_parse(FILE *fp) {
   // Using a linked list, nodes are appended to the list tail until we 
   // reach a list terminator at which point we return the list head.
-  struct SNode *tail, *head = NULL;
+  SNode *tail, *head = NULL;
   int c;
 
   while ((c = fgetc(fp)) != EOF) {
-    struct SNode *node = NULL;
+    SNode *node = NULL;
 
     if (c == ')') {
       // Terminate list recursion
       break;
     } else if (c == '(') {
       // Begin list recursion
-      node = malloc(sizeof(struct SNode));
+      node = malloc(sizeof(SNode));
       node->type = S_LIST;
       node->list = snode_parse(fp);
     } else if (c == '"') {
       // Read a string
-      node = malloc(sizeof(struct SNode));
+      node = malloc(sizeof(SNode));
       node->type = S_STRING;
       node->value = read_value(fp, &c, &is_str_term);
     } else if (!isspace(c)) {
       // Read a float, integer, or symbol
       ungetc(c, fp);
       
-      node = malloc(sizeof(struct SNode));
+      node = malloc(sizeof(SNode));
       node->value = read_value(fp, &c, &is_lst_term);
 
       // Put the terminator back
@@ -102,9 +102,9 @@ struct SNode *snode_parse(FILE *fp) {
 }
 
 // Recursively free memory allocated by a node
-void snode_free(struct SNode *node) {
+void snode_free(SNode *node) {
   while (node != NULL) {
-    struct SNode *tmp = node;
+    SNode *tmp = node;
 
     if (node->type == S_LIST) {
       snode_free(node->list);
@@ -122,7 +122,7 @@ void snode_free(struct SNode *node) {
   }
 }
 
-void snode_print(struct SNode *node, FILE* out)
+void snode_print(SNode *node, FILE* out)
 {
 	while (node)
 	{
@@ -150,7 +150,7 @@ void snode_print(struct SNode *node, FILE* out)
 	}
 }
 
-struct SNode* snode_expect(struct SNode *node, enum SNodeType ty)
+SNode* snode_expect(SNode *node, enum SNodeType ty)
 {
 	static char const * to_str[] = {
 		[S_FLOAT] = "float",
@@ -168,7 +168,7 @@ struct SNode* snode_expect(struct SNode *node, enum SNodeType ty)
 	return node;
 }
 
-struct SNode* snode_geti(struct SNode* node, size_t i)
+SNode* snode_geti(SNode* node, size_t i)
 {
 	for (; node && i > 0; i --)
 	{
@@ -177,7 +177,7 @@ struct SNode* snode_geti(struct SNode* node, size_t i)
 	return node;
 }
 
-struct SNode* snode_geti_expect(struct SNode* node, size_t i)
+SNode* snode_geti_expect(SNode* node, size_t i)
 {
 	node = snode_geti(node, i);
 	if (!node) {
@@ -188,7 +188,7 @@ struct SNode* snode_geti_expect(struct SNode* node, size_t i)
 }
 
 /** takes something like `(name "alex") (pass 123)`; note that next() is used on @list */
-struct SNode* snode_kv_get(struct SNode* list, char const * key)
+SNode* snode_kv_get(SNode* list, char const * key)
 {
 	while (list) 
 	{
@@ -197,9 +197,9 @@ struct SNode* snode_kv_get(struct SNode* list, char const * key)
 			exit(1);
 		}
 
-		struct SNode* kv = list->list;
-		struct SNode* k = snode_geti_expect(kv, 0);
-		struct SNode* v = snode_geti_expect(kv, 1);
+		SNode* kv = list->list;
+		SNode* k = snode_geti_expect(kv, 0);
+		SNode* v = snode_geti_expect(kv, 1);
 
 		snode_expect(k, S_SYMBOL);
         assert(k->value);
@@ -214,7 +214,7 @@ struct SNode* snode_kv_get(struct SNode* list, char const * key)
 }
 
 /** takes something like `(name "alex") (pass 123)`; note that next() is used on @list */
-struct SNode* snode_kv_get_expect(struct SNode* list, char const * key)
+SNode* snode_kv_get_expect(SNode* list, char const * key)
 {
 	list = snode_kv_get(list, key);
 	if (!list) {
@@ -225,7 +225,7 @@ struct SNode* snode_kv_get_expect(struct SNode* list, char const * key)
 }
 
 /** 1 + how many next nodes there are */
-size_t snode_num_nodes(struct SNode* sn)
+size_t snode_num_nodes(SNode* sn)
 {
 	size_t n = 0;
 	while (sn) {
@@ -235,18 +235,18 @@ size_t snode_num_nodes(struct SNode* sn)
 	return n;
 }
 
-struct SNode* snode_mk(enum SNodeType type, char const* value)
+SNode* snode_mk(enum SNodeType type, char const* value)
 {
-	struct SNode* nd = malloc(sizeof(struct SNode));
+	SNode* nd = malloc(sizeof(SNode));
 	nd->type = type;
 	nd->next = NULL;
 	nd->value = strdup(value);
 	return nd;
 }
 
-struct SNode* snode_mk_list(struct SNode* inner)
+SNode* snode_mk_list(SNode* inner)
 {
-	struct SNode* nd = malloc(sizeof(struct SNode));
+	SNode* nd = malloc(sizeof(SNode));
 	nd->type = S_LIST;
 	nd->next = NULL;
 	nd->list = inner;
@@ -254,14 +254,14 @@ struct SNode* snode_mk_list(struct SNode* inner)
 }
 
 /** creates a (k v) */
-struct SNode* snode_mk_kv(char const* key, struct SNode* val)
+SNode* snode_mk_kv(char const* key, SNode* val)
 {
-	struct SNode* nd = snode_mk(S_SYMBOL, key);
+	SNode* nd = snode_mk(S_SYMBOL, key);
 	nd->next = val;
 	return snode_mk_list(nd);
 }
 
-struct SNode* snode_tail(struct SNode* nd)
+SNode* snode_tail(SNode* nd)
 {
 	if (!nd) return NULL;
 	for (; nd->next; nd = nd->next);
@@ -269,7 +269,7 @@ struct SNode* snode_tail(struct SNode* nd)
 }
 
 /** concatenates b to the tail of a and returns the beginning */
-struct SNode* snode_cat(struct SNode* opta, struct SNode* b)
+SNode* snode_cat(SNode* opta, SNode* b)
 {
 	if (!opta) return b;
 	snode_tail(opta)->next = b;

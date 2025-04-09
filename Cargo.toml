@@ -1,0 +1,13 @@
+[package]
+name = "vxcc-sys"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libc = "0.2.171"
+
+[build-dependencies]
+rust_cdef = { path = "rust_cdef" }
+cc = { version = "1.2.18", features = ["parallel"] }
+bindgen = "0.71.1"
+regex = "1.11.1"

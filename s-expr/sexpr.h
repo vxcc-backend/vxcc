@@ -11,48 +11,49 @@ enum SNodeType {
   S_FLOAT
 };
 
+typedef struct SNode SNode;
 struct SNode {
-  struct SNode *next;
+  SNode *next;
   enum SNodeType type;
   union {
-    struct SNode *list;
+    SNode *list;
     char *value;
   };
 };
 
 /** does NOT close file */
-struct SNode *snode_parse(FILE *fp);
+SNode *snode_parse(FILE *fp);
 
-void snode_free(struct SNode *node);
+void snode_free(SNode *node);
 
-void snode_print(struct SNode *node, FILE* out);
-struct SNode* snode_expect(struct SNode *node, enum SNodeType ty);
-struct SNode* snode_geti(struct SNode* node, size_t i);
-struct SNode* snode_geti_expect(struct SNode* node, size_t i);
-
-/** takes something like `(name "alex") (pass 123)`; note that next() is used on @list */
-struct SNode* snode_kv_get(struct SNode* list, char const * key);
+void snode_print(SNode *node, FILE* out);
+SNode* snode_expect(SNode *node, enum SNodeType ty);
+SNode* snode_geti(SNode* node, size_t i);
+SNode* snode_geti_expect(SNode* node, size_t i);
 
 /** takes something like `(name "alex") (pass 123)`; note that next() is used on @list */
-struct SNode* snode_kv_get_expect(struct SNode* list, char const * key);
+SNode* snode_kv_get(SNode* list, char const * key);
+
+/** takes something like `(name "alex") (pass 123)`; note that next() is used on @list */
+SNode* snode_kv_get_expect(SNode* list, char const * key);
 
 /** 1 + how many next nodes there are */
-size_t snode_num_nodes(struct SNode* sn);
+size_t snode_num_nodes(SNode* sn);
 
-struct SNode* snode_mk(enum SNodeType type, char const* value);
-struct SNode* snode_mk_list(struct SNode* inner);
+SNode* snode_mk(enum SNodeType type, char const* value);
+SNode* snode_mk_list(SNode* inner);
 
 /** creates a (k v) */
-struct SNode* snode_mk_kv(char const* key, struct SNode* val);
+SNode* snode_mk_kv(char const* key, SNode* val);
 
-struct SNode* snode_tail(struct SNode* nd);
+SNode* snode_tail(SNode* nd);
 
 /** concatenates b to the tail of a and returns the beginning */
-struct SNode* snode_cat(struct SNode* opta, struct SNode* b);
+SNode* snode_cat(SNode* opta, SNode* b);
 
 /** creates a (a b c d) */
 #define snode_mk_listx(arr, arrlen, serial, serialarg) ({\
-	struct SNode* li = NULL; \
+	SNode* li = NULL; \
 	for (size_t i = 0; i < arrlen; i ++) { \
 		li = snode_cat(li, serial((serialarg), arr[i])); \
 	} \
@@ -61,7 +62,7 @@ struct SNode* snode_cat(struct SNode* opta, struct SNode* b);
 
 /** creates a (a b c d) */
 #define snode_mk_listxli(begin, next, serial, serialarg) ({\
-	struct SNode* li = NULL; \
+	SNode* li = NULL; \
 	for (typeof(begin) i = (begin); i; i = (i->next)) { \
 		li = snode_cat(li, serial((serialarg), i)); \
 	} \

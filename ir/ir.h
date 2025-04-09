@@ -1,9 +1,7 @@
 #ifndef IR_H
 #define IR_H
 
-#include <stddef.h>
-
-#ifdef __LM__
+#if defined(__LM__)
 # define bool int
 # define true 1
 # define false 0
@@ -11,6 +9,7 @@
 # include <stdbool.h>
 #endif
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,6 +19,7 @@
 
 #include "../targets/targets.h"
 #include "../build/ir/ops.cdef.h"
+#include "../s-expr/sexpr.h"
 
 typedef size_t vx_IrVar;
 
@@ -596,8 +596,6 @@ void vx_IrBlock_markVarOrigin(vx_IrBlock* block, vx_IrVar old, vx_IrVar newv);
 void vx_IrBlock_root_varsHeat(vx_IrBlock* block);
 void vx_IrBlock_llir_varsHeat(vx_IrBlock* block);
 
-
-#include "../s-expr/sexpr.h"
 
 vx_IrVar vx_IrVar_parseS(vx_CU* cu, struct SNode* nd);
 vx_IrTypedVar vx_IrTypedVar_parseS(vx_CU* cu, struct SNode* nd);

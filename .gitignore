@@ -6,3 +6,10 @@ venv/
 *.plist
 tests/*.asm
 tests/*.o
+
+Cargo.lock
+target
+rust_cdef/target/
+rust_cdef/Cargo.lock
+rust_test/target/
+rust_test/Cargo.lock
