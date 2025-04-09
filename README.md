@@ -1,4 +1,4 @@
-## IMPORTANT: the compiler will be completely rewritten soon. Do not use this anymore
+IMPORTANT: this will be rewritten eventually, which means that there will be no more feature updates. Bugs will however be fixed.
 
 # VXCC
 optimizing, small, simple, compiler backend.

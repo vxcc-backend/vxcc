@@ -181,7 +181,7 @@ cmd_vs2asm(int argc, const char **argv)
 	assert(cu);
 
 	FILE* out = openfile(opath, "w");
-	int cs = vx_CU_compile(cu, NULL, NULL, out, VX_BIN_ELF, NULL);
+	int cs = vx_CU_compile(cu, NULL, NULL, out, VX_BIN_ELF, NULL, VX_CU_COMPILE_MODE_FROM_CIR);
 	fclose(out);
 
 	snode_free(nd);

@@ -100,22 +100,6 @@ argparse_getvalue(struct argparse *self, const struct argparse_option *opt,
         if (s[0] != '\0') // no digits or contains invalid characters
             argparse_error(self, opt, "expects an integer value", flags);
         break;
-    case ARGPARSE_OPT_FLOAT:
-        errno = 0;
-        if (self->optvalue) {
-            *(float *)opt->value = strtof(self->optvalue, (char **)&s);
-            self->optvalue       = NULL;
-        } else if (self->argc > 1) {
-            self->argc--;
-            *(float *)opt->value = strtof(*++self->argv, (char **)&s);
-        } else {
-            argparse_error(self, opt, "requires a value", flags);
-        }
-        if (errno == ERANGE)
-            argparse_error(self, opt, "numerical result out of range", flags);
-        if (s[0] != '\0') // no digits or contains invalid characters
-            argparse_error(self, opt, "expects a numerical value", flags);
-        break;
     default:
         assert(0);
     }
@@ -136,7 +120,6 @@ argparse_options_check(const struct argparse_option *options)
             case ARGPARSE_OPT_BOOLEAN:
             case ARGPARSE_OPT_BIT:
             case ARGPARSE_OPT_INTEGER:
-            case ARGPARSE_OPT_FLOAT:
             case ARGPARSE_OPT_STRING:
             case ARGPARSE_OPT_GROUP:
                 continue;
@@ -375,9 +358,7 @@ argparse_usage(struct argparse *self)
         if (options->type == ARGPARSE_OPT_INTEGER) {
             len += strlen("=<int>");
         }
-        if (options->type == ARGPARSE_OPT_FLOAT) {
-            len += strlen("=<flt>");
-        } else if (options->type == ARGPARSE_OPT_STRING) {
+        if (options->type == ARGPARSE_OPT_STRING) {
             len += strlen("=<str>");
         }
         len = (len + 3) - ((len + 3) & 3);
@@ -409,8 +390,6 @@ argparse_usage(struct argparse *self)
         }
         if (options->type == ARGPARSE_OPT_INTEGER) {
             pos += fprintf(stdout, "=<int>");
-        } else if (options->type == ARGPARSE_OPT_FLOAT) {
-            pos += fprintf(stdout, "=<flt>");
         } else if (options->type == ARGPARSE_OPT_STRING) {
             pos += fprintf(stdout, "=<str>");
         }
