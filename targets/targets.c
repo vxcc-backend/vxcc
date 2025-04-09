@@ -80,10 +80,11 @@ void vx_Target_info(vx_TargetInfo* dest, vx_Target const* target)
 #define TARGET_FLAGS_GEN(tg) \
 typedef bool vx_Target_##tg##__flags [vx_Target_##tg##__len]; \
 void vx_Target_##tg##__parseAdditionalFlag(vx_Target_##tg##__flags * dest, const char * flag) { \
+    assert(flag); \
     for (size_t i = 0; i < vx_Target_##tg##__len; i ++) { \
         if (*dest[i]) continue; \
         vx_Target_##tg##__entry* entry = &vx_Target_##tg##__entries[i]; \
-        if (strcmp(entry->id.a, flag) == 0) { \
+        if (entry->id.a && !strcmp(entry->id.a, flag)) { \
             (*dest)[i] = true; \
             if (entry->infer.set) \
                 vx_Target_##tg##__parseAdditionalFlags(dest, entry->infer.a); \

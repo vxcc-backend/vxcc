@@ -39,6 +39,7 @@ vx_IrValue vx_IrValue_parseS(vx_CU* cu, struct SNode* nd)
 
 	struct SNode* kind = snode_geti_expect(nd, 0);
 	snode_expect(kind, S_SYMBOL);
+    assert(kind->value);
 
 	if (!strcmp(kind->value, "int")) {
 		struct SNode* v = snode_geti_expect(nd, 1);
@@ -207,7 +208,9 @@ void vx_CUBlock_parseS(vx_CU* cu, struct SNode* s)
 	struct SNode* inner = snode_expect(snode_geti_expect(s, 1), S_LIST)->list;
 
 	// TODO: other block types
-	if (strcmp(snode_expect(inner, S_SYMBOL)->value, "block")) {
+	char const* kindval = snode_expect(inner, S_SYMBOL)->value;
+    assert(kindval);
+    if (strcmp(kindval, "block")) {
 		fprintf(stderr, "that's not how cu-block works (1)\n");
 		exit(1);
 	}
@@ -248,6 +251,7 @@ vx_IrType* vx_IrType_parseS(vx_CU* cu, struct SNode* s)
 	char const* name = snode_expect(snode_geti_expect(s, 0), S_STRING)->value;
 	char const* kind = snode_expect(snode_geti_expect(s, 1), S_SYMBOL)->value;
 	struct SNode* inner = snode_expect(snode_geti_expect(s, 2), S_LIST)->list;
+    assert(kind);
 
 	if (!strcmp(kind, "simple")) {
 		bool flt = vx_bool_parseS(cu, snode_kv_get_expect(inner, "float"));
@@ -286,6 +290,7 @@ vx_CU* vx_CU_parseS(struct SNode* s)
 	{
 		struct SNode* kv = snode_expect(s, S_LIST)->list;
 		char const* k = snode_expect(snode_geti_expect(kv, 0), S_SYMBOL)->value;
+        assert(k);
 		struct SNode* v = snode_geti_expect(kv, 1);
 
 		if (!strcmp(k, "opt")) {

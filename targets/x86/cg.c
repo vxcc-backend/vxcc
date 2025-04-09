@@ -268,6 +268,8 @@ static void emitEa(Location* ea, FILE* out) {
 }
 
 static void emit(Location* loc, FILE* out) {
+    assert(loc);
+
     switch (loc->type) {
         case LOC_EA:
             emitEa(loc, out);
@@ -465,6 +467,9 @@ static bool equal(Location* a, Location* b) {
 }
 
 static void emiti_move(Location* src, Location *dest, bool sign_ext, FILE* out) {
+    assert(src);
+    assert(dest);
+
     if (src->type == LOC_INVALID) { // undefined means that we don't have to set it at all
         return;
     }

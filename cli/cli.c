@@ -20,6 +20,8 @@ struct cmd_struct {
 };
 
 FILE* openfile(char const* path, char const* mode) {
+    assert(path);
+    assert(mode);
 	if (!strcmp(path, "-")) {
 		if (!strcmp(mode, "r") || !strcmp(mode, "rb")) {
 			return stdin;

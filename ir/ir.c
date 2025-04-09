@@ -351,10 +351,11 @@ void vx_IrOp_updateParent(vx_IrOp* op, vx_IrBlock* to)
 
 vx_IrType* vx_CU_typeByName(vx_CU* cu, char const* name)
 {
+    assert(name);
 	for (size_t i = 0; i < cu->types_len; i ++)
 	{
 		vx_IrType* ty = cu->types[i];
-		if (!strcmp(ty->debugName, name)) {
+		if (ty->debugName && !strcmp(ty->debugName, name)) {
 			return ty;
 		}
 	}
@@ -363,11 +364,12 @@ vx_IrType* vx_CU_typeByName(vx_CU* cu, char const* name)
 
 vx_IrBlock* vx_CU_blockByName(vx_CU* cu, char const* name)
 {
+    assert(name);
 	for (size_t i = 0; i < cu->blocks_len; i ++)
 	{
 		vx_CUBlock b = cu->blocks[i];
 		if (b.type == VX_CU_BLOCK_IR) {
-			if (!strcmp(b.v.ir->name, name)) {
+			if (b.v.ir->name && !strcmp(b.v.ir->name, name)) {
 				return b.v.ir;
 			}
 		}

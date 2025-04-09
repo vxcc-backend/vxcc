@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "sexpr.h"
 
@@ -201,6 +202,8 @@ struct SNode* snode_kv_get(struct SNode* list, char const * key)
 		struct SNode* v = snode_geti_expect(kv, 1);
 
 		snode_expect(k, S_SYMBOL);
+        assert(k->value);
+        assert(key);
 		if (!strcmp(k->value, key))
 			return v;
 
