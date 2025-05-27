@@ -1,4 +1,7 @@
-IMPORTANT: this will be rewritten eventually, which means that there will be no more feature updates. Bugs will however be fixed.
+**IMPORTANT: This is currently beeing completely rewritten and redesigned in http://github.com/vxcc-backend/vxcc-new**
+
+
+
 
 # VXCC
 optimizing, small, simple, compiler backend.
